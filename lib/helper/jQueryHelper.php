@@ -339,11 +339,13 @@ function jq_remote_function($options)
 	// Is it a link with csrf protection
 	elseif(isset($options['csrf']) && $options['csrf'] == '1')
 	{
-		$form = new sfForm();
-  		if ($form->isCSRFProtected())
-  		{
-  			$formData = '{'.$form->getCSRFFieldName().': \''.$form->getCSRFToken().'\'}';
-  		}
+	  // Symfony 1.4 form should be BaseForm, not sfForm. Also this means
+	  // CSRF works properly according to Jose Fernando Castillo Rosas
+		$form = new BaseForm();
+		if ($form->isCSRFProtected())
+		{
+			$formData = '{'.$form->getCSRFFieldName().': \''.$form->getCSRFToken().'\'}';
+		}
 	}
 
 	// build the function
