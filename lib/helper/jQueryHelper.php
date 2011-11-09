@@ -10,14 +10,21 @@ require_once(sfConfig::get('sf_symfony_lib_dir') . '/helper/JavascriptBaseHelper
  * tom@punkave.com 20090413: be consistent with the way global
  * settings.yml files work, it should always be the webdir, not the /js/
  * subfolder of the webdir.
+ *
+ * tom@punkave.com 20111109: if sf_jquery_core is explicitly set to false,
+ * don't try to load jquery at all - some other version of jquery is already
+ * in the project by other means.
  */
 
-if (!$jq_path = sfConfig::get('sf_jquery_path'))
+if (sfConfig::get('sf_jquery_core', null) !== false)
 {
-  $jq_path = sfConfig::get('sf_jquery_web_dir', '/sfJqueryReloadedPlugin') .
-    '/js/' . sfConfig::get('sf_jquery_core', 'jquery-1.4.2.min.js');
+  if (!$jq_path = sfConfig::get('sf_jquery_path'))
+  {
+    $jq_path = sfConfig::get('sf_jquery_web_dir', '/sfJqueryReloadedPlugin') .
+      '/js/' . sfConfig::get('sf_jquery_core', 'jquery-1.4.2.min.js');
+  }
+  sfContext::getInstance()->getResponse()->addJavascript($jq_path, 'first');
 }
-sfContext::getInstance()->getResponse()->addJavascript($jq_path, 'first');
 
 /**
  * Add jQuery plugins by name rather than by filename so that you don't have
